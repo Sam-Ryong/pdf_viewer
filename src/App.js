@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 // 스타일 기본 적용 (버전에 따라 경로가 다를 수 있으나 최신 기준 esm 사용)
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -9,15 +9,22 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 function App() {
   const [numPages, setNumPages] = useState(null);
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#f0f2f5', padding: '30px 0' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#f0f2f5', padding: width > 600 ? '30px 0' : '10px 0' }}>
       
-      <a href="/portfolio.pdf" download="백엔드_포트폴리오.pdf" style={{ marginBottom: '20px', padding: '10px 20px', backgroundColor: '#0070f3', color: 'white', textDecoration: 'none', borderRadius: '5px', fontWeight: 'bold' }}>
+      <a href="/portfolio.pdf" download="백엔드_포트폴리오.pdf" style={{ marginBottom: '20px', padding: width > 600 ? '10px 20px' : '8px 16px', backgroundColor: '#0070f3', color: 'white', textDecoration: 'none', borderRadius: '5px', fontWeight: 'bold', fontSize: width > 600 ? '16px' : '14px' }}>
         포트폴리오 원본 다운로드
       </a>
 
@@ -32,7 +39,7 @@ function App() {
               pageNumber={index + 1} 
               renderTextLayer={false}
               renderAnnotationLayer={false}
-              width={800} // 데스크탑 기준 너비 (원하시는 대로 조절하세요)
+              width={width > 800 ? 800 : width - 40} // 반응형 너비 적용
             />
           </div>
         ))}
