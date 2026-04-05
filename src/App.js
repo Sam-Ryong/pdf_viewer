@@ -30,6 +30,8 @@ function App() {
 
       <Document
         file="/portfolio.pdf" // public 폴더 기준 경로
+        externalLinkTarget="_blank"
+        externalLinkRel="noopener noreferrer"
         onLoadSuccess={onDocumentLoadSuccess}
         loading={<div style={{ padding: '20px' }}>PDF를 불러오는 중입니다...</div>}
       >
@@ -37,8 +39,8 @@ function App() {
           <div key={`page_${index + 1}`} style={{ marginBottom: '20px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}>
             <Page 
               pageNumber={index + 1} 
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
+              renderTextLayer={true}
+              renderAnnotationLayer={true}
               width={width > 800 ? 800 : width - 40} // 반응형 너비 적용
             />
           </div>
